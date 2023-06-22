@@ -2,6 +2,8 @@
 
 namespace Foxws\LivewireEncrypt;
 
+use Foxws\LivewireEncrypt\Middlewares\HydratePublicProperties;
+use Illuminate\Foundation\AliasLoader;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -13,13 +15,13 @@ class EncryptServiceProvider extends PackageServiceProvider
             ->name('livewire-encrypt');
     }
 
-    public function packageRegistered()
+    public function packageRegistered(): void
     {
-        //
-    }
+        $loader = AliasLoader::getInstance();
 
-    public function packageBooted(): void
-    {
-        //
+        $loader->alias(
+            \Livewire\HydrationMiddleware\HydratePublicProperties::class,
+            HydratePublicProperties::class
+        );
     }
 }

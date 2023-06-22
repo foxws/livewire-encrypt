@@ -1,9 +1,10 @@
 {
     "name": "foxws/livewire-encrypt",
-    "description": "This is my package livewire-encrypt",
+    "description": "Encrypt Livewire memo data",
     "keywords": [
         "foxws",
         "laravel",
+        "livewire",
         "livewire-encrypt"
     ],
     "homepage": "https://github.com/foxws/livewire-encrypt",
@@ -36,8 +37,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Foxws\\LivewireEncrypt\\": "src/",
-            "Foxws\\LivewireEncrypt\\Database\\Factories\\": "database/factories/"
+            "Foxws\\LivewireEncrypt\\": "src/"
         }
     },
     "autoload-dev": {
@@ -63,10 +63,7 @@
         "laravel": {
             "providers": [
                 "Foxws\\LivewireEncrypt\\EncryptServiceProvider"
-            ],
-            "aliases": {
-                "LivewireEncrypt": "Foxws\\LivewireEncrypt\\Facades\\Encrypt"
-            }
+            ]
         }
     },
     "minimum-stability": "dev",
