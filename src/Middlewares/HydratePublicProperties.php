@@ -3,7 +3,6 @@
 namespace Foxws\LivewireEncrypt\Middlewares;
 
 use Intervention\Image\Gd\Font;
-use Livewire\HydrationMiddleware\HydratePublicProperties as Middleware;
 
 class HydratePublicProperties extends Font
 {

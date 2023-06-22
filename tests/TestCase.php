@@ -2,9 +2,9 @@
 
 namespace Foxws\LivewireEncrypt\Tests;
 
+use Foxws\LivewireEncrypt\EncryptServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Orchestra\Testbench\TestCase as Orchestra;
-use Foxws\LivewireEncrypt\EncryptServiceProvider;
 
 class TestCase extends Orchestra
 {
@@ -13,7 +13,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'Foxws\\LivewireEncrypt\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'Foxws\\LivewireEncrypt\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

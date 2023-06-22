@@ -10,6 +10,7 @@ class LivewireServiceProvider extends LivewireLivewireServiceProvider
     {
         dd('booted');
     }
+
     public function boot()
     {
         dd('booted');

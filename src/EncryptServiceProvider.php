@@ -45,7 +45,6 @@ class EncryptServiceProvider extends PackageServiceProvider
     {
         // $this->app->singleton(\Livewire\LivewireServiceProvider::class, LivewireServiceProvider::class);
 
-
         $this->app->bind(
             \Livewire\LivewireServiceProvider::class,
             LivewireServiceProvider::class
@@ -70,7 +69,6 @@ class EncryptServiceProvider extends PackageServiceProvider
             \Livewire\HydrationMiddleware\HydratePublicProperties::class,
             HydratePublicProperties::class
         );
-
 
         // $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         // $loader->alias(
