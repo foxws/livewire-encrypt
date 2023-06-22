@@ -55,17 +55,17 @@ class HydratePublicProperties implements HydrationMiddleware
                 ];
 
                 data_set($instance, $property, new $types[$type]($value));
-            } else if (in_array($property, $collections)) {
+            } elseif (in_array($property, $collections)) {
                 data_set($instance, $property, collect($value));
-            } else if ($class = data_get($enums, $property)) {
+            } elseif ($class = data_get($enums, $property)) {
                 data_set($instance, $property, $class::from($value));
-            } else if ($serialized = data_get($models, $property)) {
+            } elseif ($serialized = data_get($models, $property)) {
                 static::hydrateModel($serialized, $property, $request, $instance);
-            } else if ($serialized = data_get($modelCollections, $property)) {
+            } elseif ($serialized = data_get($modelCollections, $property)) {
                 static::hydrateModels($serialized, $property, $request, $instance);
-            } else if (in_array($property, $stringables)) {
+            } elseif (in_array($property, $stringables)) {
                 data_set($instance, $property, new Stringable($value));
-            } else if (in_array($property, $wireables) && version_compare(PHP_VERSION, '7.4', '>=')) {
+            } elseif (in_array($property, $wireables) && version_compare(PHP_VERSION, '7.4', '>=')) {
                 $type = (new \ReflectionClass($instance))
                     ->getProperty($property)
                     ->getType()
@@ -101,27 +101,27 @@ class HydratePublicProperties implements HydrationMiddleware
                 // The value is a supported type, set it in the data, if not, throw an exception for the user.
                 is_bool($value) || is_null($value) || is_numeric($value)
             ) {
-                data_set($response, 'memo.data.' . $key, $value);
-            } else if (is_array($value)) {
+                data_set($response, 'memo.data.'.$key, $value);
+            } elseif (is_array($value)) {
                 // The data here needs to be normalised, so that Safari handles special charaters properly without throwing a checksum exception.
-                data_set($response, 'memo.data.' . $key, static::normalizeArray($value));
-            } else if (is_string($value)) {
+                data_set($response, 'memo.data.'.$key, static::normalizeArray($value));
+            } elseif (is_string($value)) {
                 // The data here needs to be normalised, so that Safari handles special charaters properly without throwing a checksum exception.
-                data_set($response, 'memo.data.' . $key, Normalizer::normalize($value));
-            } else if ($value instanceof Wireable && version_compare(PHP_VERSION, '7.4', '>=')) {
+                data_set($response, 'memo.data.'.$key, Normalizer::normalize($value));
+            } elseif ($value instanceof Wireable && version_compare(PHP_VERSION, '7.4', '>=')) {
                 $response->memo['dataMeta']['wireables'][] = $key;
 
-                data_set($response, 'memo.data.' . $key, $value->toLivewire());
-            } else if ($value instanceof QueueableEntity) {
+                data_set($response, 'memo.data.'.$key, $value->toLivewire());
+            } elseif ($value instanceof QueueableEntity) {
                 static::dehydrateModel($value, $key, $response, $instance);
-            } else if ($value instanceof QueueableCollection) {
+            } elseif ($value instanceof QueueableCollection) {
                 static::dehydrateModels($value, $key, $response, $instance);
-            } else if ($value instanceof Collection) {
+            } elseif ($value instanceof Collection) {
                 $response->memo['dataMeta']['collections'][] = $key;
 
                 // The data here needs to be normalised, so that Safari handles special charaters properly without throwing a checksum exception.
-                data_set($response, 'memo.data.' . $key, static::normalizeCollection($value)->toArray());
-            } else if ($value instanceof DateTimeInterface) {
+                data_set($response, 'memo.data.'.$key, static::normalizeCollection($value)->toArray());
+            } elseif ($value instanceof DateTimeInterface) {
                 if ($value instanceof IlluminateCarbon) {
                     $response->memo['dataMeta']['dates'][$key] = 'illuminate';
                 } elseif ($value instanceof Carbon) {
@@ -134,15 +134,15 @@ class HydratePublicProperties implements HydrationMiddleware
                     $response->memo['dataMeta']['dates'][$key] = 'native';
                 }
 
-                data_set($response, 'memo.data.' . $key, $value->format(\DateTimeInterface::ISO8601));
-            } else if ($value instanceof Stringable) {
+                data_set($response, 'memo.data.'.$key, $value->format(\DateTimeInterface::ISO8601));
+            } elseif ($value instanceof Stringable) {
                 $response->memo['dataMeta']['stringables'][] = $key;
 
-                data_set($response, 'memo.data.' . $key, $value->__toString());
-            } else if (is_subclass_of($value, 'BackedEnum')) {
+                data_set($response, 'memo.data.'.$key, $value->__toString());
+            } elseif (is_subclass_of($value, 'BackedEnum')) {
                 $response->memo['dataMeta']['enums'][$key] = get_class($value);
 
-                data_set($response, 'memo.data.' . $key, $value->value);
+                data_set($response, 'memo.data.'.$key, $value->value);
             } else {
                 throw new PublicPropertyTypeNotAllowedException($instance::getName(), $key, $value);
             }
@@ -201,7 +201,7 @@ class HydratePublicProperties implements HydrationMiddleware
         $data
     ) {
         foreach ($data as $key => $value) {
-            if (is_array($value) && !empty($value)) {
+            if (is_array($value) && ! empty($value)) {
                 $existingData = data_get($model, $key);
 
                 if (is_array($existingData)) {
@@ -232,19 +232,19 @@ class HydratePublicProperties implements HydrationMiddleware
 
     protected static function dehydrateModel($value, $property, $response, $instance)
     {
-        $serializedModel = $value instanceof QueueableEntity && !$value->exists
+        $serializedModel = $value instanceof QueueableEntity && ! $value->exists
             ? ['class' => get_class($value)]
             : (array) (new static)->getSerializedPropertyValue($value);
 
         $serializedModel = static::encryptModel($serializedModel);
 
         // Deserialize the models into the "meta" bag.
-        data_set($response, 'memo.dataMeta.models.' . $property, $serializedModel);
+        data_set($response, 'memo.dataMeta.models.'.$property, $serializedModel);
 
         $filteredModelData = static::filterData($instance, $property);
 
         // Only include the allowed data (defined by rules) in the response payload
-        data_set($response, 'memo.data.' . $property, $filteredModelData);
+        data_set($response, 'memo.data.'.$property, $filteredModelData);
     }
 
     protected static function dehydrateModels($value, $property, $response, $instance)
@@ -254,7 +254,7 @@ class HydratePublicProperties implements HydrationMiddleware
         $serializedModel = static::encryptModel($serializedModel);
 
         // Deserialize the models into the "meta" bag.
-        data_set($response, 'memo.dataMeta.modelCollections.' . $property, $serializedModel);
+        data_set($response, 'memo.dataMeta.modelCollections.'.$property, $serializedModel);
 
         $filteredModelData = static::filterData(
             $instance,
@@ -262,7 +262,7 @@ class HydratePublicProperties implements HydrationMiddleware
         );
 
         // Only include the allowed data (defined by rules) in the response payload
-        data_set($response, 'memo.data.' . $property, $filteredModelData);
+        data_set($response, 'memo.data.'.$property, $filteredModelData);
     }
 
     public static function filterData($instance, $property)
@@ -338,7 +338,7 @@ class HydratePublicProperties implements HydrationMiddleware
                     $newFilteredData = data_get($data, $key) instanceof stdClass ? new stdClass : [];
                     data_set($filteredData, $key, static::extractData(data_get($data, $key), $rule, $newFilteredData));
                 } else {
-                    if ($rule == "*") {
+                    if ($rule == '*') {
                         $filteredData = $data;
                     } elseif (Arr::accessible($data) || is_object($data)) {
                         data_set($filteredData, $rule, data_get($data, $rule));
