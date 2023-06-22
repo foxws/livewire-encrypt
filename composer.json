@@ -5,7 +5,8 @@
         "foxws",
         "laravel",
         "livewire",
-        "livewire-encrypt"
+        "livewire-encrypt",
+        "livewire-encryption"
     ],
     "homepage": "https://github.com/foxws/livewire-encrypt",
     "license": "MIT",
