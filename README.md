@@ -9,9 +9,9 @@
 
 By default Livewire exposes database connection details. See the following [discussion](https://github.com/livewire/livewire/discussions/2627) for details.
 
-This package encrypts the `dataMeta.models` response, so your database details cannot be retrieved.
+This package encrypts `memo.dataMeta.models` and `memo.dataMeta.modelCollections` responses, so your database details cannot easily be retrieved.
 
-> **NOTE:** This package is a POC and comes without any warranty it actually works.
+> **NOTE:** This package is a POC and comes without any warranty it actually working.
 
 ## Installation
 
@@ -23,18 +23,35 @@ composer require foxws/livewire-encrypt
 
 This package should auto-register and overrule the Livewire `HydratePublicProperties` class.
 
-### Filament
+## Filament
 
-By default Livewire exposes all public properties to the view.
+> **NOTE:** By default Livewire exposes model properties to the view, unless it's defined in the model's `$hidden` property.
 
-When using route binding, one may want to overrule the `id` attribute, to hide this from the public:
+When using [Filament](https://filamentphp.com/), one may want to force route-binding instead, and use the following trait on the Edit/View page:
 
 ```php
-protected function mutateFormDataBeforeFill(array $data): array
-{
-    $data['id'] = $data['prefixed_id']; // slug, uuid, ..
+<?php
 
-    return $data;
+namespace App\Admin\Concerns;
+
+trait InteractsWithFormData
+{
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        return $this->prepareFormDataBeforeFill($data);
+    }
+
+    protected function prepareFormDataBeforeFill(array $data): array
+    {
+        // Replace model id with route-key
+        $data['id'] = $this->getRecord()->getRouteKey();
+
+        if (array_key_exists('prefixed_id', $data)) {
+            unset($data['prefixed_id']);
+        }
+
+        return $data;
+    }
 }
 ```
 
